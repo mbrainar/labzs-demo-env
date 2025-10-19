@@ -5,6 +5,7 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
+    restart: always
     networks:
       - proxy
     ports:
