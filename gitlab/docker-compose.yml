@@ -1,0 +1,32 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ee
+    container_name: gitlab
+    restart: unless-stopped
+    hostname: 'gitlab.labzs.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # Add any other gitlab.rb configuration here, each on its own line
+        external_url 'http://gitlab.labzs.com'
+    volumes:
+      - './config:/etc/gitlab'
+      - './logs:/var/log/gitlab'
+      - './data:/var/opt/gitlab'
+    shm_size: '256m'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"   # number of files or file count
+        max-size: "500m" # file size
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitlab.rule=Host(`gitlab.labzs.com`)"
+      - "traefik.http.routers.gitlab.entrypoints=web"
+      - "traefik.http.services.gitlab.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
+
