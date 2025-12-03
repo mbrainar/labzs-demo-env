@@ -1,6 +1,7 @@
 services:
   splunk:
     image: splunk/splunk:latest
+    container_name: splunk
     environment:
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_PASSWORD=YourSplunkPassw0rd
@@ -10,7 +11,13 @@ services:
       # Don't expose 8000 directly; Traefik will route it
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.splunk.rule=Host(`splunk.localtest.me`)"
+      - "traefik.http.routers.splunk.rule=Host(`splunk.labzs.com`)"
       - "traefik.http.routers.splunk.entrypoints=web"
       - "traefik.http.services.splunk.loadbalancer.server.port=8000"
     restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
