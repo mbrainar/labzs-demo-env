@@ -1,0 +1,53 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: snipeit-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: snipeit_root_password
+      MYSQL_DATABASE: snipeit
+      MYSQL_USER: snipeit
+      MYSQL_PASSWORD: snipeit_db_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+  snipeit:
+    image: snipe/snipe-it:latest
+    container_name: snipeit-app
+    restart: unless-stopped
+    environment:
+      APP_KEY: base64:3ilviXqB9u6DX1NRcyWGJ+sjySF+H18CPDGb3+IVwMQ=
+      APP_URL: http://assets.labzs.com
+      DB_HOST: mysql
+      DB_DATABASE: snipeit
+      DB_USERNAME: snipeit
+      DB_PASSWORD: snipeit_db_password
+      MAIL_PORT_587_TCP_ADDR: smtp.yourprovider.com
+      MAIL_PORT_587_TCP_PORT: 587
+      MAIL_USERNAME: your@email.com
+      MAIL_PASSWORD: your_mail_password
+      MAIL_FROM_ADDR: noreply@yourdomain.com
+      MAIL_FROM_NAME: 'Snipe-IT'
+    depends_on:
+      - mysql
+    volumes:
+      - snipeit_assets:/var/lib/snipeit
+    networks:
+      - backend
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.snipeit.rule=Host(`assets.labzs.com`)"
+      - "traefik.http.routers.snipeit.entrypoints=web"
+      - "traefik.http.services.snipeit.loadbalancer.server.port=80"
+
+volumes:
+  mysql_data:
+  snipeit_assets:
+
+networks:
+  backend:
+  proxy:
+    external: true
