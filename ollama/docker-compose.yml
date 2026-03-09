@@ -1,0 +1,39 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    networks:
+      - llm_internal
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+    # no ports: -> not exposed outside Docker
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - openwebui:/app/backend/data
+    networks:
+      - proxy
+      - llm_internal
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.openwebui.rule=Host(`chat.labzs.com`)
+      - traefik.http.routers.openwebui.entrypoints=web
+      - traefik.http.services.openwebui.loadbalancer.server.port=8080
+
+networks:
+  proxy:
+    external: true
+  llm_internal:
+
+volumes:
+  ollama:
+  openwebui:
