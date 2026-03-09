@@ -13,19 +13,19 @@ services:
       - backend
 
   confluence:
-    image: atlassian/confluence-server:latest
+    image: atlassian/confluence:latest
     container_name: confluence
     environment:
-      - JVM_MAXIMUM_MEMORY=4096m
-      - JVM_MINIMUM_MEMORY=2048m
-      - ATL_PROXY_NAME=confluence.labzs.com
-      - ATL_PROXY_PORT=80
-      - ATL_PROXY_SCHEME=http
-      - ATL_JDBC_URL=jdbc:postgresql://db:5432/confluence
-      - ATL_JDBC_USER=confluence_user
-      - ATL_JDBC_PASSWORD=confluence_pass
-      - ATL_DB_DRIVER=org.postgresql.Driver
-      - ATL_DB_TYPE=postgresql
+      JVM_MAXIMUM_MEMORY: "4096m"
+      JVM_MINIMUM_MEMORY: "2048m"
+      ATL_PROXY_NAME: "confluence.labzs.com"
+      ATL_PROXY_PORT: 80
+      ATL_TOMCAT_SCHEME: "http"
+      ATL_JDBC_URL: "jdbc:postgresql://db:5432/confluence"
+      ATL_JDBC_USER: "confluence_user"
+      ATL_JDBC_PASSWORD: "confluence_pass"
+      ATL_DB_DRIVER: "org.postgresql.Driver"
+      ATL_DB_TYPE: "postgresql"
     volumes:
       - confluence_data:/var/atlassian/application-data/confluence
     networks:
@@ -36,6 +36,7 @@ services:
       - db
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.confluence.rule=Host(`confluence.labzs.com`)"
       - "traefik.http.routers.confluence.entrypoints=web"
       - "traefik.http.services.confluence.loadbalancer.server.port=8090"
