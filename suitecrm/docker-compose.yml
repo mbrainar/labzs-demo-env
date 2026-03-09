@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mariadb:10.5
+    container_name: suitecrm-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=suitecrm
+      - MYSQL_USER=suitecrm_user
+      - MYSQL_PASSWORD=suitecrm_pass
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+
+  suitecrm:
+    image: bitnamilegacy/suitecrm:8.8.1
+    container_name: suitecrm
+    environment:
+      - SUITECRM_DATABASE_HOST=db
+      - SUITECRM_DATABASE_PORT=3306
+      - SUITECRM_DATABASE_NAME=suitecrm
+      - SUITECRM_DATABASE_USER=suitecrm_user
+      - SUITECRM_DATABASE_PASSWORD=suitecrm_pass
+      - SUITECRM_DATABASE_ROOT_PASSWORD=rootpassword
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.suitecrm.rule=Host(`suitecrm.labzs.com`)"
+      - "traefik.http.routers.suitecrm.entrypoints=web"
+      - "traefik.http.services.suitecrm.loadbalancer.server.port=8080"
+    depends_on:
+      - db
+    networks:
+      - backend
+      - proxy
+
+volumes:
+  db-data:
+
+networks:
+  proxy:
+    external: true
+  backend:
