@@ -1,2 +1,10 @@
 # Docker container volumes
 uptime-kuma/uptime-kuma-data/
+
+gitlab/config/
+gitlab/logs/
+gitlab/data/
+
+jenkins/data/
+
+confluence/confluence.cfg.xml
