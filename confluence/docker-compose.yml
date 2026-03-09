@@ -28,6 +28,7 @@ services:
       ATL_DB_TYPE: "postgresql"
     volumes:
       - confluence_data:/var/atlassian/application-data/confluence
+      - ./confluence.cfg.xml:/var/atlassian/application-data/confluence/confluence.cfg.xml:ro
     networks:
       - proxy
       - backend
