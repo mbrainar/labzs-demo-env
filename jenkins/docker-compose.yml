@@ -9,7 +9,7 @@ services:
       - "50000:50000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jenkins.rule=Host(`jenkins.labzs.com`)"
+      - "traefik.http.routers.jenkins.rule=Host(`jenkins.labzs.com`) || Host(`jenkins`)"
       - "traefik.http.routers.jenkins.entrypoints=web"
       - "traefik.http.services.jenkins.loadbalancer.server.port=8080"
     networks:
