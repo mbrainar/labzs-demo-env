@@ -22,10 +22,9 @@ def get_moon_phase():
     # Positions
     earth_pos = earth.at(t)
     moon_pos = earth_pos.observe(moon)
-    sun_pos = earth_pos.observe(sun)
 
     # Phase angle
-    phase_angle = moon_pos.phase_angle(sun_pos).degrees
+    phase_angle = moon_pos.phase_angle(sun).degrees
 
     # Phase fraction (0 to 1)
     phase_fraction = (1 + math.cos(math.radians(phase_angle))) / 2
