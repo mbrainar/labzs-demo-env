@@ -22,38 +22,54 @@ def get_moon_phase():
     # Positions
     earth_pos = earth.at(t)
     moon_pos = earth_pos.observe(moon)
+    sun_pos = earth_pos.observe(sun)
 
     # Phase angle
     phase_angle = moon_pos.phase_angle(sun).degrees
 
     # Phase fraction (0 to 1)
-    phase_fraction = (1 + math.cos(math.radians(phase_angle))) / 2
+    phase_fraction = (1 - math.cos(math.radians(phase_angle))) / 2
+
+    # Determine if waxing or waning
+    moon_lat, moon_lon = moon_pos.ecliptic_latlon()
+    sun_lat, sun_lon = sun_pos.ecliptic_latlon()
+    moon_lon_deg = moon_lon.degrees
+    sun_lon_deg = sun_lon.degrees
+    # Handle wrap around
+    if moon_lon_deg < sun_lon_deg - 180:
+        moon_lon_deg += 360
+    elif moon_lon_deg > sun_lon_deg + 180:
+        moon_lon_deg -= 360
+    is_waxing = moon_lon_deg > sun_lon_deg
 
     # Determine phase name
     if phase_fraction < 0.125:
         phase_name = "New Moon"
         emoji = "🌑"
     elif phase_fraction < 0.375:
-        phase_name = "Waxing Crescent"
-        emoji = "🌒"
+        if is_waxing:
+            phase_name = "Waxing Crescent"
+            emoji = "🌒"
+        else:
+            phase_name = "Waning Crescent"
+            emoji = "🌘"
     elif phase_fraction < 0.625:
-        phase_name = "First Quarter"
-        emoji = "🌓"
+        if is_waxing:
+            phase_name = "First Quarter"
+            emoji = "🌓"
+        else:
+            phase_name = "Last Quarter"
+            emoji = "🌗"
     elif phase_fraction < 0.875:
-        phase_name = "Waxing Gibbous"
-        emoji = "🌔"
-    elif phase_fraction < 0.9375:
+        if is_waxing:
+            phase_name = "Waxing Gibbous"
+            emoji = "🌔"
+        else:
+            phase_name = "Waning Gibbous"
+            emoji = "🌖"
+    else:
         phase_name = "Full Moon"
         emoji = "🌕"
-    elif phase_fraction < 0.96875:
-        phase_name = "Waning Gibbous"
-        emoji = "🌖"
-    elif phase_fraction < 0.984375:
-        phase_name = "Last Quarter"
-        emoji = "🌗"
-    else:
-        phase_name = "Waning Crescent"
-        emoji = "🌘"
 
     return {
         'phase_name': phase_name,
