@@ -4,8 +4,6 @@ services:
   app:
     build: .
     container_name: moontrackerapp
-    expose:
-      - "5000"   # internal web port
     labels:
       - "traefik.enable=true"
 
@@ -14,3 +12,9 @@ services:
       - "traefik.http.routers.moon-web.entrypoints=web"
       - "traefik.http.routers.moon-web.service=moon-web"
       - "traefik.http.services.moon-web.loadbalancer.server.port=5000"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
