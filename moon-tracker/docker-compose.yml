@@ -1,0 +1,16 @@
+services:
+
+  # ─── Single app container — serves web UI on port 5000 ──────────
+  app:
+    build: .
+    container_name: moontrackerapp
+    expose:
+      - "5000"   # internal web port
+    labels:
+      - "traefik.enable=true"
+
+      # Web UI router: moon.labzs.com:80 → internal port 5000
+      - "traefik.http.routers.moon-web.rule=Host(`moon.labzs.com`)"
+      - "traefik.http.routers.moon-web.entrypoints=web"
+      - "traefik.http.routers.moon-web.service=moon-web"
+      - "traefik.http.services.moon-web.loadbalancer.server.port=5000"
