@@ -10,7 +10,3 @@ jenkins/data/
 confluence/confluence.cfg.xml
 
 librenms/db_password
-
-# Traefik ACME/AWS secrets and certificate storage
-traefik/.env
-traefik/letsencrypt/
