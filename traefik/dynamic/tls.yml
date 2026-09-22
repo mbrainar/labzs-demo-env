@@ -1,0 +1,9 @@
+tls:
+  certificates:
+    - certFile: /etc/traefik/certs/labzs.com.crt
+      keyFile: /etc/traefik/certs/labzs.com.key
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/traefik/certs/labzs.com.crt
+        keyFile: /etc/traefik/certs/labzs.com.key
