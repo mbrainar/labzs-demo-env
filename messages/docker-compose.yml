@@ -10,15 +10,17 @@ services:
     labels:
       - "traefik.enable=true"
 
-      # Web UI router: messages.labzs.com:80 → internal port 8000
+      # Web UI router: messages.labzs.com:443 → internal port 8000
       - "traefik.http.routers.messages-web.rule=Host(`messages.labzs.com`)"
-      - "traefik.http.routers.messages-web.entrypoints=web"
+      - "traefik.http.routers.messages-web.entrypoints=websecure"
+      - "traefik.http.routers.messages-web.tls=true"
       - "traefik.http.routers.messages-web.service=messages-web"
       - "traefik.http.services.messages-web.loadbalancer.server.port=8000"
 
-      # API router: messages.labzs.com:9000 → internal port 9000
+      # API router: messages.labzs.com:9000 (TLS) → internal port 9000
       - "traefik.http.routers.messages-api.rule=Host(`messages.labzs.com`)"
       - "traefik.http.routers.messages-api.entrypoints=api"
+      - "traefik.http.routers.messages-api.tls=true"
       - "traefik.http.routers.messages-api.service=messages-api"
       - "traefik.http.services.messages-api.loadbalancer.server.port=9000"
 
