@@ -8,3 +8,5 @@ gitlab/data/
 jenkins/data/
 
 confluence/confluence.cfg.xml
+
+librenms/db_password

@@ -1,0 +1,64 @@
+services:
+  mariadb:
+    image: mariadb:10
+    container_name: librenms-db
+    command:
+      - mysqld
+      - --innodb-file-per-table=1
+      - --lower-case-table-names=0
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      TZ: America/New_York
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: librenms
+      MYSQL_USER: librenms
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - backend
+
+  librenms:
+    image: librenms/librenms:latest
+    container_name: librenms
+    hostname: librenms
+    depends_on:
+      - mariadb
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+      DB_HOST: mariadb
+      DB_NAME: librenms
+      DB_USER: librenms
+      FILE__DB_PASSWORD: /run/secrets/db_password
+      DB_TIMEOUT: 60
+      APP_TRUSTED_PROXIES: "*"
+    secrets:
+      - db_password
+    volumes:
+      - ./librenms:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.librenms.rule=Host(`librenms.labzs.com`)"
+      - "traefik.http.routers.librenms.entrypoints=web"
+      - "traefik.http.services.librenms.loadbalancer.server.port=8000"
+    networks:
+      - backend
+      - proxy
+    restart: unless-stopped
+
+secrets:
+  db_password:
+    file: ./db_password
+
+networks:
+  proxy:
+    external: true
