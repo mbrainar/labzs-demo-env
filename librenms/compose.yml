@@ -47,6 +47,7 @@ services:
       - ./librenms:/data
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.librenms.rule=Host(`librenms.labzs.com`)"
       - "traefik.http.routers.librenms.entrypoints=websecure"
       - "traefik.http.routers.librenms.tls=true"
