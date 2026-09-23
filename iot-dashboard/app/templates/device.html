@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ hostname }} &middot; Check-in History{% endblock %}
+{% block content %}
+  <div class="page-head">
+    <h1>{{ hostname }}</h1>
+    <div class="head-actions">
+      <a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to dashboard</a>
+      <details class="actions">
+        <summary>Actions &#9662;</summary>
+        <div class="menu">
+          {% if device_ip %}
+          <a href="{{ url_for('device_rdp', hostname=hostname) }}">RDP to {{ device_ip }}</a>
+          <a href="ssh://{{ device_ip }}" class="js-copy" data-copy="ssh {{ device_ip }}">SSH to {{ device_ip }}</a>
+          <button type="button" class="js-copy" data-copy="{{ device_ip }}">Copy IP address</button>
+          {% else %}
+          <span class="menu-note">RDP/SSH unavailable: no valid IPv4 on latest check-in</span>
+          {% endif %}
+          <a href="{{ url_for('device_history_csv', hostname=hostname) }}">Export history (CSV)</a>
+          <div class="divider"></div>
+          <button type="button" class="danger" data-confirm
+            data-title="Clear check-in history?"
+            data-message="Deletes {{ pagination.total - 1 }} older check-in(s) for {{ hostname }}. Only the most recent check-in is kept, so the device stays on the dashboard. This cannot be undone."
+            data-confirm-label="Clear history"
+            data-url="{{ url_for('device_clear', hostname=hostname) }}">Clear check-in history</button>
+          <button type="button" class="danger" data-confirm
+            data-title="Delete device?"
+            data-message="Permanently deletes {{ hostname }} and all {{ pagination.total }} of its check-ins. If the device is still running its check-in job it will reappear on its next check-in. This cannot be undone."
+            data-confirm-label="Delete device"
+            data-url="{{ url_for('device_delete', hostname=hostname) }}">Delete device</button>
+        </div>
+      </details>
+    </div>
+  </div>
+  {% if cleared is not none %}
+  <p class="notice">Cleared {{ cleared }} older check-in(s).</p>
+  {% endif %}
+  <p id="action-note" class="hint" hidden></p>
+
+  <dialog id="confirm-dialog">
+    <form id="confirm-form" method="post">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-message"></p>
+      <div class="dialog-buttons">
+        <button type="button" id="confirm-cancel">Cancel</button>
+        <button type="submit" id="confirm-submit" class="danger-solid">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <table>
+    <thead>
+      <tr>
+        <th>IP Address</th>
+        <th>Device Time</th>
+        <th>Received (server time)</th>
+        <th>Time Since</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in checkins %}
+      <tr>
+        <td>{{ c.ip_address }}</td>
+        <td>{{ c.device_time }}</td>
+        <td>{{ c.received_at }}</td>
+        <td>{{ c.time_since }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pager">
+    {% if pagination.has_prev %}
+      <a href="{{ url_for('device_detail', hostname=hostname, page=pagination.prev_num) }}">&larr; Newer</a>
+    {% endif %}
+    <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+    {% if pagination.has_next %}
+      <a href="{{ url_for('device_detail', hostname=hostname, page=pagination.next_num) }}">Older &rarr;</a>
+    {% endif %}
+  </div>
+
+  <script src="{{ url_for('static', filename='device.js') }}"></script>
+{% endblock %}

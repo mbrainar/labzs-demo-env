@@ -1,0 +1,32 @@
+services:
+  web:
+    build: .
+    image: iot-dashboard:latest
+    container_name: iot-dashboard
+    volumes:
+      - iot-data:/data
+    environment:
+      # Optional shared secret devices must send as the X-API-Key header.
+      # Leave blank to accept check-ins with no auth.
+      API_KEY: ""
+      # A device is shown as offline after this many minutes without a check-in.
+      STALE_AFTER_MINUTES: "10"
+      # Check-in history kept per device; older rows are deleted on each new check-in.
+      MAX_CHECKINS_PER_DEVICE: "300"
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.iot-dashboard.rule=Host(`iot-dashboard.labzs.com`)"
+      - "traefik.http.routers.iot-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.iot-dashboard.tls=true"
+      - "traefik.http.services.iot-dashboard.loadbalancer.server.port=5000"
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  iot-data:
