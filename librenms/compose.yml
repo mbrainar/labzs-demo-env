@@ -48,7 +48,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.librenms.rule=Host(`librenms.labzs.com`)"
-      - "traefik.http.routers.librenms.entrypoints=web"
+      - "traefik.http.routers.librenms.entrypoints=websecure"
+      - "traefik.http.routers.librenms.tls=true"
       - "traefik.http.services.librenms.loadbalancer.server.port=8000"
     networks:
       - backend
