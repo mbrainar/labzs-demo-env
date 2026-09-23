@@ -38,7 +38,7 @@ services:
       DB_HOST: mariadb
       DB_NAME: librenms
       DB_USER: librenms
-      FILE__DB_PASSWORD: /run/secrets/db_password
+      DB_PASSWORD_FILE: /run/secrets/db_password
       DB_TIMEOUT: 60
       APP_TRUSTED_PROXIES: "*"
     secrets:
