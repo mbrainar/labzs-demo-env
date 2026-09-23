@@ -7,7 +7,10 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # Add any other gitlab.rb configuration here, each on its own line
-        external_url 'http://gitlab.labzs.com'
+        external_url 'https://gitlab.labzs.com'
+        # TLS is terminated at traefik; gitlab's bundled nginx stays on plain HTTP
+        nginx['listen_https'] = false
+        nginx['listen_port'] = 80
     volumes:
       - './config:/etc/gitlab'
       - './logs:/var/log/gitlab'
@@ -23,7 +26,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gitlab.rule=Host(`gitlab.labzs.com`)"
-      - "traefik.http.routers.gitlab.entrypoints=web"
+      - "traefik.http.routers.gitlab.entrypoints=websecure"
+      - "traefik.http.routers.gitlab.tls=true"
       - "traefik.http.services.gitlab.loadbalancer.server.port=80"
 
 networks:
