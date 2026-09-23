@@ -3,7 +3,7 @@ services:
     image: traefik:v3.5
     container_name: traefik
     command:
-      - "--api.insecure=true"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.file.directory=/etc/traefik/dynamic"
@@ -12,12 +12,19 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.api.address=:9000"
     restart: always
+    labels:
+      - "traefik.enable=true"
+
+      # Dashboard: traefik.labzs.com → built-in api@internal service
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.labzs.com`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
     networks:
       - proxy
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
       - "9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
