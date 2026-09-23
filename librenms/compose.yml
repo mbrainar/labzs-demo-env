@@ -63,3 +63,4 @@ secrets:
 networks:
   proxy:
     external: true
+  backend:
