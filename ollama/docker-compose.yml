@@ -26,7 +26,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.http.routers.openwebui.rule=Host(`chat.labzs.com`)
-      - traefik.http.routers.openwebui.entrypoints=web
+      - traefik.http.routers.openwebui.entrypoints=websecure
+      - traefik.http.routers.openwebui.tls=true
       - traefik.http.services.openwebui.loadbalancer.server.port=8080
 
 networks:
