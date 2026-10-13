@@ -23,7 +23,6 @@ services:
       - SUITECRM_DATABASE_PASSWORD=suitecrm_pass
       - SUITECRM_DATABASE_ROOT_PASSWORD=rootpassword
       - SUITECRM_HOST=suitecrm.labzs.com
-      - SUITECRM_ENABLE_HTTPS=yes
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
