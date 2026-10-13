@@ -22,10 +22,14 @@ services:
       - SUITECRM_DATABASE_USER=suitecrm_user
       - SUITECRM_DATABASE_PASSWORD=suitecrm_pass
       - SUITECRM_DATABASE_ROOT_PASSWORD=rootpassword
+      - SUITECRM_HOST=suitecrm.labzs.com
+      - SUITECRM_ENABLE_HTTPS=yes
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.suitecrm.rule=Host(`suitecrm.labzs.com`)"
-      - "traefik.http.routers.suitecrm.entrypoints=web"
+      - "traefik.http.routers.suitecrm.entrypoints=websecure"
+      - "traefik.http.routers.suitecrm.tls=true"
       - "traefik.http.services.suitecrm.loadbalancer.server.port=8080"
     depends_on:
       - db
