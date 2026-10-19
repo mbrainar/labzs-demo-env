@@ -13,7 +13,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.splunk.rule=Host(`splunk.labzs.com`)"
-      - "traefik.http.routers.splunk.entrypoints=web"
+      - "traefik.http.routers.splunk.entrypoints=websecure"
+      - "traefik.http.routers.splunk.tls=true"
       - "traefik.http.services.splunk.loadbalancer.server.port=8000"
     restart: unless-stopped
     networks:
