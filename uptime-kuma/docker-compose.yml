@@ -10,7 +10,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.uptime-kuma.rule=Host(`uptime.labzs.com`)"
-      - "traefik.http.routers.uptime-kuma.entrypoints=web"
+      - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
+      - "traefik.http.routers.uptime-kuma.tls=true"
 
 networks:
   proxy:

@@ -1,6 +1,6 @@
 services:
   splunk:
-    image: splunk/splunk:9.4.16
+    image: splunk/splunk:latest
     container_name: splunk
     environment:
       - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com

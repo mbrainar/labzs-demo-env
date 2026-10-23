@@ -2,6 +2,7 @@ services:
   db:
     image: mariadb:10.5
     container_name: suitecrm-db
+    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=suitecrm
@@ -15,6 +16,7 @@ services:
   suitecrm:
     image: bitnamilegacy/suitecrm:8.8.1
     container_name: suitecrm
+    restart: unless-stopped
     environment:
       - SUITECRM_DATABASE_HOST=db
       - SUITECRM_DATABASE_PORT=3306
